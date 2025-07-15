@@ -1,0 +1,342 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+
+        Classroom classroomA1 = new Classroom("A1");
+        Classroom classroomA2 = new Classroom("A2");
+        Department mathDepartment = new Department("math");
+        Department englishDepartment = new Department("english");
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nSelect an option:");
+            System.out.println("1. Add student to a class");
+            System.out.println("2. Remove student from a class");
+            System.out.println("3. Add teacher to a department");
+            System.out.println("4. Remove teacher from a department");
+            System.out.println("5. View students in a specific classroom");
+            System.out.println("6. View teachers in a specific department");
+            System.out.println("7. Exit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter student name:");
+                    String studentName = scanner.nextLine();
+                    System.out.println("Enter student age:");
+                    int studentAge = scanner.nextInt();
+                    scanner.nextLine();
+                     System.out.println("Enter student classroom:");
+                    String studentClassroom = scanner.nextLine();
+                    Student student = new Student(studentName, studentAge, studentClassroom);
+                    if (studentClassroom.equals("A1")) {
+                        classroomA1.add(student);
+                    } else if (studentClassroom.equals("A2")) {
+                        classroomA2.add(student);
+                    } else {
+                        System.out.println("Invalid classroom.");
+                    }
+                    break;
+
+                case 2:
+                    System.out.println("Enter student name to remove:");
+                    String studentToRemove = scanner.nextLine();
+                    System.out.println("Enter classroom:");
+                    String removeClassroom = scanner.nextLine();
+                    if (removeClassroom.equals("A1")) {
+                        classroomA1.remove(studentToRemove);
+                    } else if (removeClassroom.equals("A2")) {
+                        classroomA2.remove(studentToRemove);
+                    } else {
+                        System.out.println("Invalid classroom.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.println("Enter teacher name:");
+                    String teacherName = scanner.nextLine();
+                    System.out.println("Enter teacher age:");
+                    int teacherAge = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.println("Enter department:");
+                    String teacherDepartment = scanner.nextLine();
+                    Teacher teacher = new Teacher(teacherName, teacherAge, teacherDepartment);
+                    if (teacherDepartment.equals("math")) {
+                        mathDepartment.add(teacher);
+                    } else if (teacherDepartment.equals("english")) {
+                        englishDepartment.add(teacher);
+                    } else {
+                        System.out.println("Invalid department.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Enter teacher name to remove:");
+                    String teacherToRemove = scanner.nextLine();
+                    System.out.println("Enter department:");
+                    String removeDepartment = scanner.nextLine();
+                    if (removeDepartment.equals("math")) {
+                        mathDepartment.remove(teacherToRemove);
+                    } else if (removeDepartment.equals("english")) {
+                        englishDepartment.remove(teacherToRemove);
+                    } else {
+                        System.out.println("Invalid department.");
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Enter classroom to view students:");
+                    String classroomToView = scanner.nextLine();
+                    if (classroomToView.equals("A1")) {
+                        classroomA1.view();
+                    } else if (classroomToView.equals("A2")) {
+                        classroomA2.view();
+                    } else {
+                        System.out.println("Invalid classroom.");
+                    }
+                    break;
+
+                case 6:
+                    System.out.println("Enter department to view teachers:");
+                    String departmentToView = scanner.nextLine();
+                    if (departmentToView.equals("math")) {
+                        mathDepartment.view();
+                    } else if (departmentToView.equals("english")) {
+                        englishDepartment.view();
+                    } else {
+                        System.out.println("Invalid department.");
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid option, please try again.");
+            }
+        }
+    }
+}
+
+
+public abstract class Person {
+    protected String name;
+    protected int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public abstract void printDetails();
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+
+import java.io.*;
+
+public class Student extends Person {
+    private String classroom;
+
+    public Student(String name, int age, String classroom) {
+        super(name, age);
+        this.classroom = classroom;
+    }
+
+    public String getClassroom() {
+        return classroom;
+    }
+
+    @Override
+    public void printDetails() {
+        System.out.println("Student: " + name + ", Age: " + age + ", Classroom: " + classroom);
+    }
+
+    public void saveToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(name + "," + age + "," + classroom);
+            writer.newLine();
+            System.out.println("Student saved to file: " + name);
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+}
+import java.io.*;
+
+public class Teacher extends Person {
+    private String department;
+
+    public Teacher(String name, int age, String department) {
+        super(name, age);
+        this.department = department;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    @Override
+    public void printDetails() {
+        System.out.println("Teacher: " + name + ", Age: " + age + ", Department: " + department);
+    }
+
+    public void saveToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(name + "," + age + "," + department);
+            writer.newLine();
+            System.out.println("Teacher saved to file: " + name);
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
+}
+public class Subject {
+    String name;
+    String grade;
+    double hours;
+
+    public Subject(String name, String grade, double hours) {
+        this.name = name;
+        this.grade = grade;
+        this.hours = hours;
+    }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "name='" + name + '\'' +
+                ", grade='" + grade + '\'' +
+                ", hours=" + hours +
+                '}';
+    }
+}
+import java.io.*;
+import java.util.ArrayList;
+
+public class Department implements Manageable {
+    private String name;
+    private ArrayList<Teacher> teachers;
+
+    public Department(String name) {
+        this.name = name;
+        this.teachers = new ArrayList<>();
+        loadFromFile("teachers.txt");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void add(Object obj) {
+        if (obj instanceof Teacher) {
+            Teacher teacher = (Teacher) obj;
+
+            for (Teacher existingTeacher : teachers) {
+                if (existingTeacher.getName().equalsIgnoreCase(teacher.getName())) {
+                    System.out.println("Teacher " + teacher.getName() + " already exists in department.");
+                    return;
+                }
+            }
+
+            teachers.add(teacher);
+            System.out.println("Added teacher: " + teacher.getName() + " to department: " + name);
+            teacher.saveToFile("teachers.txt");
+        }
+    }
+
+    @Override
+    public void remove(String name) {
+        boolean removed = teachers.removeIf(teacher -> teacher.getName().equalsIgnoreCase(name));
+
+        if (removed) {
+            System.out.println("Removed teacher: " + name + " from department: " + this.name);
+            updateFile("teachers.txt");
+        } else {
+            System.out.println("Teacher not found: " + name);
+        }
+    }
+
+    private void updateFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Teacher teacher : teachers) {
+                writer.write(teacher.getName() + "," + teacher.getAge() + "," + teacher.getDepartment());
+                writer.newLine();
+            }
+            System.out.println("File updated successfully.");
+        } catch (IOException e) {
+            System.out.println("Error updating file: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void view() {
+        if (teachers.isEmpty()) {
+            System.out.println("No teachers in the department: " + name);
+        } else {
+            System.out.println("Teachers in department: " + name);
+            for (Teacher teacher : teachers) {
+                System.out.println(teacher.getName() + " (" + teacher.getAge() + " years old)");
+            }
+        }
+    }
+
+    public void saveToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            for (Teacher teacher : teachers) {
+                writer.write(teacher.getName() + "," + teacher.getAge() + "," + teacher.getDepartment());
+                writer.newLine();
+            }
+            System.out.println("Department data saved to file.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private void loadFromFile(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[2].equalsIgnoreCase(name)) {
+                    boolean exists = false;
+                    for (Teacher teacher : teachers) {
+                        if (teacher.getName().equalsIgnoreCase(data[0])) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        teachers.add(new Teacher(data[0], Integer.parseInt(data[1]), data[2]));
+                    }
+                }
+            }
+            System.out.println("Department data loaded from file.");
+        } catch (IOException e) {
+            System.out.println("Error reading from file: " + e.getMessage());
+        }
+    }
+}
+
+
+
+public interface Manageable {
+    void add(Object obj);
+    void remove(String name);
+    void view();
+}
